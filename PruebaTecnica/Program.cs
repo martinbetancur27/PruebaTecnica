@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using PruebaTecnica.Data;
+
 namespace PruebaTecnica
 {
     public class Program
@@ -8,6 +11,10 @@ namespace PruebaTecnica
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("ConnectionDB")
+            ));
 
             var app = builder.Build();
 
