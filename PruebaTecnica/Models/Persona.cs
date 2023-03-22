@@ -4,11 +4,13 @@ namespace PruebaTecnica.Models
 {
     public class Persona
     {
+        [Key]
+        public Guid Id { get; set; }
+
         public string Nombres { get; set; }
 
         public string Apellidos { get; set; }
 
-        [Key]
         public string Identificacion { get; set; }
 
         public string Genero { get; set; }

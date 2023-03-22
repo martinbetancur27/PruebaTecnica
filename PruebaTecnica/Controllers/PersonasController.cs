@@ -10,25 +10,25 @@ using PruebaTecnica.Models;
 
 namespace PruebaTecnica.Controllers
 {
-    public class PersonaController : Controller
+    public class PersonasController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PersonaController(ApplicationDbContext context)
+        public PersonasController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Persona
+        // GET: Personas
         public async Task<IActionResult> Index()
         {
               return _context.Personas != null ? 
                           View(await _context.Personas.ToListAsync()) :
-                          Problem("Collection  is null.");
+                          Problem("Entity set 'ApplicationDbContext.Personas'  is null.");
         }
 
-        // GET: Persona/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: Personas/Details/5
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Personas == null)
             {
@@ -36,7 +36,7 @@ namespace PruebaTecnica.Controllers
             }
 
             var persona = await _context.Personas
-                .FirstOrDefaultAsync(m => m.Identificacion == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (persona == null)
             {
                 return NotFound();
@@ -45,21 +45,22 @@ namespace PruebaTecnica.Controllers
             return View(persona);
         }
 
-        // GET: Persona/Create
+        // GET: Personas/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Persona/Create
+        // POST: Personas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombres,Apellidos,Identificacion,Genero,Telefono,CorreoElectronico")] Persona persona)
+        public async Task<IActionResult> Create([Bind("Id,Nombres,Apellidos,Identificacion,Genero,Telefono,CorreoElectronico")] Persona persona)
         {
             if (ModelState.IsValid)
             {
+                persona.Id = Guid.NewGuid();
                 _context.Add(persona);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -67,8 +68,8 @@ namespace PruebaTecnica.Controllers
             return View(persona);
         }
 
-        // GET: Persona/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        // GET: Personas/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Personas == null)
             {
@@ -83,14 +84,14 @@ namespace PruebaTecnica.Controllers
             return View(persona);
         }
 
-        // POST: Persona/Edit/5
+        // POST: Personas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nombres,Apellidos,Identificacion,Genero,Telefono,CorreoElectronico")] Persona persona)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nombres,Apellidos,Identificacion,Genero,Telefono,CorreoElectronico")] Persona persona)
         {
-            if (id != persona.Identificacion)
+            if (id != persona.Id)
             {
                 return NotFound();
             }
@@ -104,7 +105,7 @@ namespace PruebaTecnica.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonaExists(persona.Identificacion))
+                    if (!PersonaExists(persona.Id))
                     {
                         return NotFound();
                     }
@@ -118,8 +119,8 @@ namespace PruebaTecnica.Controllers
             return View(persona);
         }
 
-        // GET: Persona/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // GET: Personas/Delete/5
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Personas == null)
             {
@@ -127,7 +128,7 @@ namespace PruebaTecnica.Controllers
             }
 
             var persona = await _context.Personas
-                .FirstOrDefaultAsync(m => m.Identificacion == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (persona == null)
             {
                 return NotFound();
@@ -136,10 +137,10 @@ namespace PruebaTecnica.Controllers
             return View(persona);
         }
 
-        // POST: Persona/Delete/5
+        // POST: Personas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (_context.Personas == null)
             {
@@ -155,9 +156,9 @@ namespace PruebaTecnica.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PersonaExists(string id)
+        private bool PersonaExists(Guid id)
         {
-          return (_context.Personas?.Any(e => e.Identificacion == id)).GetValueOrDefault();
+          return (_context.Personas?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
